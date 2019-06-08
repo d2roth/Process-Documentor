@@ -10,15 +10,7 @@ exports.index = (req, res) => {
     })
     .catch(err => {
       console.error( `Error: ${err}` );
-      res.render('processes/index', {
-        processes: [],
-        title: 'Process Archive'
-      })
     });
-    res.render('processes/index', {
-      processes: [],
-      title: 'Process Archive'
-    })
 };
 
 exports.show = (req, res) => {
