@@ -1,0 +1,19 @@
+extends ../layouts/main.pug
+
+block globals
+  - title = "Some ways you can contact me";
+
+block content
+
+  header
+    h1
+      = title
+      br/ There are some ways you can contact me below.
+  .card
+    .card-header Git Repositories
+    .card-body
+      ul
+        li
+          a(href="https://github.com/d2roth") GitHub
+        li
+          a(href="https://github.com/d2roth") BitBucket

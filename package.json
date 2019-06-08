@@ -1,0 +1,26 @@
+{
+  "name": "process-documentor",
+  "version": "1.0.0",
+  "description": "Write out a process in a document allowing users to fill in details as nessesary for use later in the process or just to save them with the process.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d2roth/Process-Documentor.git"
+  },
+  "author": "Daniel Roth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/d2roth/Process-Documentor/issues"
+  },
+  "homepage": "https://github.com/d2roth/Process-Documentor#readme",
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.5.14",
+    "pug": "^2.0.3"
+  }
+}

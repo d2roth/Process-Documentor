@@ -1,0 +1,27 @@
+extends ../layouts/main.pug
+block content
+  .container
+    header
+      h1= title
+
+    div
+      table.table.table-striped
+        thead
+          tr
+            th Title
+            th Status
+            th
+        
+        tbody
+          each process in processes
+            tr
+              td
+                a(href=`/processes/${process.id}`)= process.title
+              td= process.status
+              td
+                a(href=`/processes/${process.id}/edit`) Edit
+                = " | "
+                form.destroy( action = '/processes/destroy', method="post", onsubmit='return confirm("Are you sure you want to terminate this life\'s masterpiece?");' )
+                  input( type="hidden", name = "id", value = process.id )
+                  input(type="submit", value="Terminate")
+
