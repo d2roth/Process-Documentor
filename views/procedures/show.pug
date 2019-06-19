@@ -1,0 +1,9 @@
+extends ../layouts/main.pug
+block content
+  .container
+    header
+      h1= procedure.title
+      small= procedure.status.toLowerCase()
+
+    div
+      = procedure.content || "Your story is processing..."

@@ -14,6 +14,7 @@ mongoose.connect( process.env.DB_URI, {
 
 const express = require( 'express' );
 const path = require( 'path' );
+const sassMiddleware = require( 'node-sass-middleware' );
 
 const app = express();
 
@@ -24,6 +25,16 @@ app.use( bodyParser.urlencoded({
   extended: true
 }) );
 // End Parser
+
+// SASS Parse
+app.use(sassMiddleware({
+    /* Options */
+    src: path.join( __dirname, 'assets', 'scss' ),
+    dest: path.join(__dirname, 'assets', 'stylesheets'),
+    // debug: true,
+    outputStyle: 'compressed',
+    prefix:  '/css'  // Where prefix is at <link rel="stylesheets" href="prefix/style.css"/>
+}));
 
 // Our views path
 app.set( 'views', path.join( __dirname, 'views' ) );

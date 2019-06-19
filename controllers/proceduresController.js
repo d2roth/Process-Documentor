@@ -1,11 +1,11 @@
-const Process = require( '../models/process' );
+const Procedure = require( '../models/procedure' );
 
 exports.index = (req, res) => {
-  Process.find()
-    .then( processes => {
-      res.render('processes/index', {
-        processes: processes,
-        title: 'Process Archive'
+  Procedure.find()
+    .then( procedures => {
+      res.render('procedures/index', {
+        procedures: procedures,
+        title: 'Procedure Archive'
       })
     })
     .catch(err => {
@@ -14,11 +14,11 @@ exports.index = (req, res) => {
 };
 
 exports.show = (req, res) => {
-  Process.findById(req.params.id)
-  .then( (process) => {
-    res.render( 'processes/show', {
-      process: process,
-      title: process.title
+  Procedure.findById(req.params.id)
+  .then( (procedure) => {
+    res.render( 'procedures/show', {
+      procedure: procedure,
+      title: procedure.title
     })
   })
   .catch(err => {
@@ -27,17 +27,17 @@ exports.show = (req, res) => {
 };
 
 exports.new = (req, res) => {
-  res.render( 'processes/new', {
-    title: 'New Process Post'
+  res.render( 'procedures/new', {
+    title: 'New Procedure Post'
   } );
 };
 
 exports.edit = (req, res) => {
-  Process.findById(req.params.id)
-  .then( (process) => {
-    res.render( 'processes/edit', {
-      process: process,
-      title: process.title
+  Procedure.findById(req.params.id)
+  .then( (procedure) => {
+    res.render( 'procedures/edit', {
+      procedure: procedure,
+      title: procedure.title
     })
   })
   .catch(err => {
@@ -48,21 +48,21 @@ exports.edit = (req, res) => {
 exports.create = (req, res) => {
 
   // This is our form post object. The POST data is an object and has our desired keys.
-  Process.create( req.body.process )
-  .then(() => {res.redirect( `/processes` )})
+  Procedure.create( req.body.procedure )
+  .then(() => {res.redirect( `/procedures` )})
   .catch(err => {
     console.error( `Error: ${err}` )
   });
 };
 
 exports.update = (req, res) => {
-  Process.updateOne({
+  Procedure.updateOne({
     _id: req.body.id
-  }, req.body.process, {
+  }, req.body.procedure, {
     runValidators: true
   } )
   .then(() => {
-    res.redirect( `/processes/${req.body.id}` );
+    res.redirect( `/procedures/${req.body.id}` );
   })
   .catch(err => {
     console.error( `Error: ${err}` )
@@ -70,11 +70,11 @@ exports.update = (req, res) => {
 };
 
 exports.destroy = (req, res) => {
-  Process.deleteOne({
+  Procedure.deleteOne({
     _id: req.body.id
   })
   .then(() => {
-    res.redirect( `/processes` );
+    res.redirect( `/procedures` );
   })
   .catch(err => {
     console.error( `Error: ${err}` )

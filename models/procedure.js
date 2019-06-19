@@ -1,14 +1,18 @@
 const mongoose = require( 'mongoose' );
 
 // Our Schema
-const ProcessSchema = new mongoose.Schema({
+const ProcedureSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true
   },
-  content: {
+  description: {
     type: String,
     required: false
+  },
+  content: {
+    type: Array,
+    required: true
   },
   status: {
     type: String,
@@ -20,4 +24,4 @@ const ProcessSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model( 'Process', ProcessSchema );
+module.exports = mongoose.model( 'Procedure', ProcedureSchema );

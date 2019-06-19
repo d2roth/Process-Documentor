@@ -1,0 +1,68 @@
+@import 'variables';
+
+.pell-content {
+  min-height: 400px;
+  resize: resize-y;
+  border: 1px solid $jeremy;
+}
+
+.pell-actionbar {
+  .pell-button {
+    background-color: $greg;
+    border: 1px solid $frank;
+    color: $jeremy;
+    margin: 5px;
+    min-width: 2em;
+
+    &.pell-button-selected {
+      background-color: $frank;
+      color: $greg;
+    }
+  }
+}
+
+
+.wysiwyg-editor-output {
+  display: none;
+}
+
+.block-insert-actions {
+}
+
+.block {
+  border: 1px solid;
+  padding: .25em;
+  margin: 1em 0;
+  position: relative;
+
+  .input-block {
+    .input-title {
+      margin-bottom: 1em;
+    }
+  }
+
+  .block-change-actions {
+    position: absolute;
+    opacity: 0;
+    transition: 2s opacity;
+    transform: translateY( -100% );
+    top: 0;
+    position: absolute;
+
+    .block-change-action {
+      cursor: pointer;
+    }
+  }
+  &:hover {
+    .block-change-actions {
+      opacity: 1;
+      transition: .5s opacity;
+    }
+  }
+
+  &:first-child .block-move-up,
+  &:last-child .block-move-down {
+    opacity: .5;
+    cursor: not-allowed;  
+  }
+}
