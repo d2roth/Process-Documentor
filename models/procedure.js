@@ -19,6 +19,7 @@ const ProcedureSchema = new mongoose.Schema({
     enum: ['DRAFT', 'PUBLISHED'],
     default: 'DRAFT'
   }
+  // Find flag "Dynamic something"
 },
 {
   timestamps: true
