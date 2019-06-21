@@ -1,0 +1,27 @@
+extends ../layouts/main.pug
+block content
+  .container
+    header
+      h1= title
+
+    div
+      table.table.table-striped
+        thead
+          tr
+            th Title
+            th Status
+            th
+        
+        tbody
+          each procedure in procedures
+            tr
+              td
+                a(href=`/procedures/${procedure.id}`)= procedure.title
+              td= procedure.status
+              td
+                a(href=`/procedures/${procedure.id}/edit`) Edit
+                = " | "
+                form.destroy( action = '/procedures/destroy', method="post", onsubmit='return confirm("Are you sure you want to terminate this life\'s masterpiece?");' )
+                  input( type="hidden", name = "id", value = procedure.id )
+                  input(type="submit", value="Terminate")
+

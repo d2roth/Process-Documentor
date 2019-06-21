@@ -10,19 +10,28 @@ const ProcedureSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  content: {
-    type: Array,
-    required: true
-  },
   status: {
     type: String,
     enum: ['DRAFT', 'PUBLISHED'],
     default: 'DRAFT'
   }
-  // Find flag "Dynamic something"
 },
 {
   timestamps: true
 });
+
+// Query Helpers
+ProcedureSchema.query.drafts = function () {
+  return this.where({
+    status: 'DRAFT'
+  });
+}
+
+ProcedureSchema.query.published = function () {
+  return this.where({
+    status: 'PUBLISHED'
+  });
+}
+
 
 module.exports = mongoose.model( 'Procedure', ProcedureSchema );

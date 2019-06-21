@@ -5,11 +5,42 @@ exports.index = (req, res) => {
     .then( procedures => {
       res.render('procedures/index', {
         procedures: procedures,
-        title: 'Procedure Archive'
+        title: 'All Procedures'
       })
     })
     .catch(err => {
-      console.error( `Error: ${err}` );
+      req.flash('error', `ERROR: ${err}`);
+      res.redirect( '/' );
+    });
+};
+
+exports.drafts = (req, res) => {
+  Procedure.find().drafts()
+  .populate('tasks')
+    .then( procedures => {
+      res.render('procedures/index', {
+        procedures: procedures,
+        title: 'Draft Procedures'
+      })
+    })
+    .catch(err => {
+      req.flash('error', `ERROR: ${err}`);
+      req.redirect('/');
+    });
+};
+
+exports.published = (req, res) => {
+  Procedure.find().published()
+  .populate('tasks')
+    .then( procedures => {
+      res.render('procedures/index', {
+        procedures: procedures,
+        title: 'Published Procedures'
+      })
+    })
+    .catch(err => {
+      req.flash('error', `ERROR: ${err}`);
+      req.redirect('/');
     });
 };
 
@@ -22,12 +53,18 @@ exports.show = (req, res) => {
     })
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/' );
   });
 };
 
 exports.new = (req, res) => {
+  let procedure = req.session.procedure ? req.session.procedure : null;
+  req.session.procedure = null;
+  
   res.render( 'procedures/new', {
+    procedure: procedure,
     title: 'New Procedure Post'
   } );
 };
@@ -41,17 +78,24 @@ exports.edit = (req, res) => {
     })
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/' );
   });
 };
 
 exports.create = (req, res) => {
-
   // This is our form post object. The POST data is an object and has our desired keys.
   Procedure.create( req.body.procedure )
-  .then(() => {res.redirect( `/procedures` )})
+  .then(() => {
+    req.flash('success', `Congrats! ${req.body.title} was created successfully.`);
+    res.redirect( `/procedures` );
+  })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.session.procedure = req.body.procedure;
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/procedures/new' );
   });
 };
 
@@ -65,7 +109,9 @@ exports.update = (req, res) => {
     res.redirect( `/procedures/${req.body.id}` );
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( `/procedures/edit/${req.body.id}` );
   });
 };
 
@@ -77,11 +123,8 @@ exports.destroy = (req, res) => {
     res.redirect( `/procedures` );
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/' );
   });
 };
-
-// To fill in later
-exports.drafts = (req, res) => {};
-
-exports.published = (req, res) => {};
