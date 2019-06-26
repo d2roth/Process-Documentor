@@ -23,4 +23,4 @@ form#procedure-form.card(action= ( procedure ? "/procedures/update" : "/procedur
     #procedureBody
 
     .form-group
-      button.btn.btn-dark(type="submit") Submit
+      button.btn.btn-dark(type="submit")= procedure && procedure.id ? "Update" : "Create"

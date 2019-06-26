@@ -2,8 +2,16 @@ extends ../layouts/main.pug
 block content
   .container
     header
-      h1= procedure.title
-      small= procedure.status.toLowerCase()
+      h1= task.title
 
     div
-      = procedure.content || "Your story is processing..."
+      - for (b of task.blocks)
+        .card
+          - if( b.title != "" )
+            .card-header
+              = `${b.title}`
+          .card-body
+            - if( b.type == 'INPUT' )
+              input.form-control( type="text", name=`${b.title}` )
+            - if( b.type == 'WYSIWYG' )
+              = b.value

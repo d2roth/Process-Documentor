@@ -13,15 +13,15 @@ block content
             th
         
         tbody
-          each procedure in procedures
+          each task in tasks
             tr
               td
-                a(href=`/procedures/${procedure.id}`)= procedure.title
-              td= procedure.status
+                a(href=`/tasks/${task.id}`)= task.title
+              td= task.status
               td
-                a(href=`/procedures/${procedure.id}/edit`) Edit
+                a(href=`/tasks/${task.id}/edit`) Edit
                 = " | "
-                form.destroy( action = '/procedures/destroy', method="post", onsubmit='return confirm("Are you sure you want to terminate this life\'s masterpiece?");' )
-                  input( type="hidden", name = "id", value = procedure.id )
+                form.destroy( action = '/tasks/destroy', method="post", onsubmit='return confirm("Are you sure you want to terminate this life\'s masterpiece?");' )
+                  input( type="hidden", name = "id", value = task.id )
                   input(type="submit", value="Terminate")
 

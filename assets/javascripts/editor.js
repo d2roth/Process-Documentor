@@ -83,11 +83,12 @@ function initalizeEditor( element ){
   return editor;
 }
 
-const procedureForm = document.querySelector('#procedure-form');
-if( procedureForm ){
-  const procedureBody = procedureForm.querySelector( '#procedureBody' );
+const taskForm = document.querySelector('#task-form');
+if( taskForm ){
+  const taskBody = taskForm.querySelector( '#taskBody' );
+  let index = taskBody.querySelectorAll( '.block' ).length;
 
-  procedureBody.addEventListener('click', (e) => {
+  taskBody.addEventListener('click', (e) => {
     let block = e.target.closest('.block');
     if( e.target && e.target.matches('.block-move-up') ){
       var node = block,
@@ -109,36 +110,41 @@ if( procedureForm ){
 
 
   let createBlock = (content, type) => {
-    return `<div class="block block-type-${type} card">
+    const block_wrapper = `<div class="block block-type-${type} card">
     <div class="block-change-actions btn-group">
       <a class="block-change-action block-move-up btn btn-primary">&#128314;</a>
       <a class="block-change-action block-move-down btn btn-primary">&#128315;</a>
     </div>
     <div class="card-body">
+      <input type="hidden" name="block_order[]" value="${index}">
+      <input type="hidden" name="task[blocks][${index}][type]" value="${type.toUpperCase()}">
+      <input type="text" class="input-title form-control" name="task[blocks][${index}][title]" placeholder="Enter Title Here...">
       ${content}
     </div>
     </div>`;
+
+    index ++;
+    return block_wrapper;
   }
 
-  let inputBlock = () => {
-    return `<input type="text" class="input-title form-control" name="procedure[content][]['input']" placeholder="Enter Title Here...">
-    <input type="text" class="form-control" disabled placeholder="Value will go here...">`;
+  let inputBlock = ( ) => {
+    return `<input type="text" class="form-control" disabled placeholder="Value will go here...">`;
   }
 
   let wysiwygBlock = ( editorId ) => {
-    return `<textarea class="wysiwyg-editor-output" id="${editorId}-output" name="procedure[content][]['wysiwyg']"></textarea>
+    return `<textarea class="wysiwyg-editor-output" id="${editorId}-output" name="task[blocks][${index}][value]"></textarea>
     <div class="wysiwyg-editor" id="${editorId}"></div>`;
   }
 
 
-  procedureForm.querySelector( '#add-input' ).addEventListener( 'click', (e) => {
-    procedureBody.insertAdjacentHTML('beforeend', createBlock(inputBlock(), 'input'));
+  taskForm.querySelector( '#add-input' ).addEventListener( 'click', (e) => {
+    taskBody.insertAdjacentHTML('beforeend', createBlock(inputBlock(), 'input'));
   }, false);
 
   let editorId = 0;
-  procedureForm.querySelector( '#add-wysiwyg' ).addEventListener( 'click', (e) => {
+  taskForm.querySelector( '#add-wysiwyg' ).addEventListener( 'click', (e) => {
     let id = editorId++;
-    procedureBody.insertAdjacentHTML('beforeend', createBlock(wysiwygBlock(`editor-${id}`), 'wysiwyg' ) );
+    taskBody.insertAdjacentHTML('beforeend', createBlock(wysiwygBlock(`editor-${id}`), 'wysiwyg' ) );
 
     const editor = document.querySelector(`#editor-${id}`);
     editor.dataset.editor = initalizeEditor(editor);

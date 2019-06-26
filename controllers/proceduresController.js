@@ -70,18 +70,26 @@ exports.new = (req, res) => {
 };
 
 exports.edit = (req, res) => {
-  Procedure.findById(req.params.id)
-  .then( (procedure) => {
+  if( process.env.SKIP_DATABASE ){
+    res.locals.flash.error.push('This view is not connected to the database! Remove or turn off SKIP_DATABASE in your environment variables.');
     res.render( 'procedures/edit', {
-      procedure: procedure,
-      title: procedure.title
+      procedure: null,
+      title: 'Some fake procedure',
+    });
+  } else {
+    Procedure.findById(req.params.id)
+    .then( (procedure) => {
+      res.render( 'procedures/edit', {
+        procedure: procedure,
+        title: procedure.title
+      })
     })
-  })
-  .catch(err => {
-    console.error( `Error: ${err}` );
-    req.flash('error', `ERROR: ${err}`);
-    res.redirect( '/' );
-  });
+    .catch(err => {
+      console.error( `Error: ${err}` );
+      req.flash('error', `ERROR: ${err}`);
+      res.redirect( '/' );
+    });
+  }
 };
 
 exports.create = (req, res) => {
@@ -111,7 +119,7 @@ exports.update = (req, res) => {
   .catch(err => {
     console.error( `Error: ${err}` );
     req.flash('error', `ERROR: ${err}`);
-    res.redirect( `/procedures/edit/${req.body.id}` );
+    res.redirect( `/procedures/${req.body.id}/edit` );
   });
 };
 
