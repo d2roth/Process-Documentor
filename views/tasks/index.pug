@@ -1,0 +1,27 @@
+extends ../layouts/main.pug
+block content
+  .container
+    header
+      h1= title
+
+    div
+      table.table.table-striped
+        thead
+          tr
+            th Title
+            th Status
+            th
+        
+        tbody
+          each task in tasks
+            tr
+              td
+                a(href=`/tasks/${task.id}`)= task.title
+              td= task.status
+              td
+                a(href=`/tasks/${task.id}/edit`) Edit
+                = " | "
+                form.destroy( action = '/tasks/destroy', method="post", onsubmit='return confirm("Are you sure you want to terminate this life\'s masterpiece?");' )
+                  input( type="hidden", name = "id", value = task.id )
+                  input(type="submit", value="Terminate")
+

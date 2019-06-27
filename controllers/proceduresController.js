@@ -5,16 +5,48 @@ exports.index = (req, res) => {
     .then( procedures => {
       res.render('procedures/index', {
         procedures: procedures,
-        title: 'Procedure Archive'
+        title: 'All Procedures'
       })
     })
     .catch(err => {
-      console.error( `Error: ${err}` );
+      req.flash('error', `ERROR: ${err}`);
+      res.redirect( '/' );
+    });
+};
+
+exports.drafts = (req, res) => {
+  Procedure.find().drafts()
+  .populate('tasks')
+    .then( procedures => {
+      res.render('procedures/index', {
+        procedures: procedures,
+        title: 'Draft Procedures'
+      })
+    })
+    .catch(err => {
+      req.flash('error', `ERROR: ${err}`);
+      req.redirect('/');
+    });
+};
+
+exports.published = (req, res) => {
+  Procedure.find().published()
+  .populate('tasks')
+    .then( procedures => {
+      res.render('procedures/index', {
+        procedures: procedures,
+        title: 'Published Procedures'
+      })
+    })
+    .catch(err => {
+      req.flash('error', `ERROR: ${err}`);
+      req.redirect('/');
     });
 };
 
 exports.show = (req, res) => {
   Procedure.findById(req.params.id)
+  .populate('tasks')
   .then( (procedure) => {
     res.render( 'procedures/show', {
       procedure: procedure,
@@ -22,36 +54,57 @@ exports.show = (req, res) => {
     })
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/' );
   });
 };
 
 exports.new = (req, res) => {
+  let procedure = req.session.procedure ? req.session.procedure : null;
+  req.session.procedure = null;
+  
   res.render( 'procedures/new', {
+    procedure: procedure,
     title: 'New Procedure Post'
   } );
 };
 
 exports.edit = (req, res) => {
-  Procedure.findById(req.params.id)
-  .then( (procedure) => {
+  if( process.env.SKIP_DATABASE ){
+    res.locals.flash.error.push('This view is not connected to the database! Remove or turn off SKIP_DATABASE in your environment variables.');
     res.render( 'procedures/edit', {
-      procedure: procedure,
-      title: procedure.title
+      procedure: null,
+      title: 'Some fake procedure',
+    });
+  } else {
+    Procedure.findById(req.params.id)
+    .then( (procedure) => {
+      res.render( 'procedures/edit', {
+        procedure: procedure,
+        title: procedure.title
+      })
     })
-  })
-  .catch(err => {
-    console.error( `Error: ${err}` )
-  });
+    .catch(err => {
+      console.error( `Error: ${err}` );
+      req.flash('error', `ERROR: ${err}`);
+      res.redirect( '/' );
+    });
+  }
 };
 
 exports.create = (req, res) => {
-
   // This is our form post object. The POST data is an object and has our desired keys.
   Procedure.create( req.body.procedure )
-  .then(() => {res.redirect( `/procedures` )})
+  .then(() => {
+    req.flash('success', `Congrats! ${req.body.procedure.title} was created successfully.`);
+    res.redirect( `/procedures` );
+  })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.session.procedure = req.body.procedure;
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/procedures/new' );
   });
 };
 
@@ -65,7 +118,9 @@ exports.update = (req, res) => {
     res.redirect( `/procedures/${req.body.id}` );
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( `/procedures/${req.body.id}/edit` );
   });
 };
 
@@ -77,11 +132,8 @@ exports.destroy = (req, res) => {
     res.redirect( `/procedures` );
   })
   .catch(err => {
-    console.error( `Error: ${err}` )
+    console.error( `Error: ${err}` );
+    req.flash('error', `ERROR: ${err}`);
+    res.redirect( '/' );
   });
 };
-
-// To fill in later
-exports.drafts = (req, res) => {};
-
-exports.published = (req, res) => {};

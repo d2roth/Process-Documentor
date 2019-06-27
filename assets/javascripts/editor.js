@@ -83,11 +83,12 @@ function initalizeEditor( element ){
   return editor;
 }
 
-const procedureForm = document.querySelector('#procedure-form');
-if( procedureForm ){
-  const procedureBody = procedureForm.querySelector( '#procedureBody' );
+const taskForm = document.querySelector('#task-form');
+if( taskForm ){
+  const taskBody = taskForm.querySelector( '#taskBody' );
+  let index = taskBody.querySelectorAll( '.block' ).length;
 
-  procedureBody.addEventListener('click', (e) => {
+  taskBody.addEventListener('click', (e) => {
     let block = e.target.closest('.block');
     if( e.target && e.target.matches('.block-move-up') ){
       var node = block,
@@ -109,43 +110,78 @@ if( procedureForm ){
 
 
   let createBlock = (content, type) => {
-    return `<div class="block block-type-${type} card">
+    const block_wrapper = `<div class="block block-type-${type} card">
     <div class="block-change-actions btn-group">
       <a class="block-change-action block-move-up btn btn-primary">&#128314;</a>
       <a class="block-change-action block-move-down btn btn-primary">&#128315;</a>
     </div>
     <div class="card-body">
+      <input type="hidden" name="block_order[]" value="${index}">
+      <input type="hidden" name="task[blocks][${index}][type]" value="${type.toUpperCase()}">
       ${content}
     </div>
     </div>`;
+
+    index ++;
+    return block_wrapper;
   }
 
-  let inputBlock = () => {
-    return `<input type="text" class="input-title form-control" name="procedure[content][]['input']" placeholder="Enter Title Here...">
-    <input type="text" class="form-control" disabled placeholder="Value will go here...">`;
+  let inputBlock = ( settings ) => {
+    return `
+      <input type="text" class="input-title form-control" name="task[blocks][${index}][title]" placeholder="Enter Title Here..." value="${settings.title !== undefined ? settings.title : ''}">
+      <input type="text" class="form-control" disabled placeholder="Value will go here...">
+    `;
   }
 
-  let wysiwygBlock = ( editorId ) => {
-    return `<textarea class="wysiwyg-editor-output" id="${editorId}-output" name="procedure[content][]['wysiwyg']"></textarea>
-    <div class="wysiwyg-editor" id="${editorId}"></div>`;
+  let wysiwygBlock = ( editorId, settings ) => {
+    return `
+      <input type="text" class="input-title form-control" name="task[blocks][${index}][title]" placeholder="Enter Title Here..." value="${settings.title !== undefined ? settings.title : ''}">
+      <textarea class="wysiwyg-editor-output" id="${editorId}-output" name="task[blocks][${index}][value]">${settings.value !== undefined ? settings.value : ''}</textarea>
+      <div class="wysiwyg-editor" id="${editorId}"></div>
+    `;
   }
 
-
-  procedureForm.querySelector( '#add-input' ).addEventListener( 'click', (e) => {
-    procedureBody.insertAdjacentHTML('beforeend', createBlock(inputBlock(), 'input'));
-  }, false);
-
-  let editorId = 0;
-  procedureForm.querySelector( '#add-wysiwyg' ).addEventListener( 'click', (e) => {
+  let initalizeInput = function ( settings ){
+    taskBody.insertAdjacentHTML('beforeend', createBlock(inputBlock(settings), 'input'));
+  }
+  let initalizeWYSIWYG = function( settings ){
     let id = editorId++;
-    procedureBody.insertAdjacentHTML('beforeend', createBlock(wysiwygBlock(`editor-${id}`), 'wysiwyg' ) );
+    taskBody.insertAdjacentHTML('beforeend', createBlock(wysiwygBlock(`editor-${id}`, settings), 'wysiwyg' ) );
 
-    const editor = document.querySelector(`#editor-${id}`);
-    editor.dataset.editor = initalizeEditor(editor);
+    let editor = document.querySelector(`#editor-${id}`);
+    initalizeEditor(editor);
 
     // Fix so tab index doesn't loop through buttons. Source: https://github.com/jaredreich/pell/issues/168
     editor.querySelectorAll('.pell-button').forEach(button => button.setAttribute('tabIndex', "-1"))
+    // Set the default content
+    editor.content.innerHTML = document.querySelector(`#editor-${id}-output`).value;
+  }
+
+  taskForm.querySelector( '#add-input' ).addEventListener( 'click', (e) => {
+    initalizeInput({});
   }, false);
+
+  let editorId = 0;
+  taskForm.querySelector( '#add-wysiwyg' ).addEventListener( 'click', (e) => {
+    initalizeWYSIWYG(editorId, {})
+  }, false);
+
+  if( taskBody.innerHTML != "" ){
+    if( blockSettings = JSON.parse( taskBody.innerHTML ) ){
+      taskBody.innerHTML = "";
+      for(blockSetting of blockSettings){
+        switch( blockSetting.type ){
+          case 'INPUT':
+            initalizeInput(blockSetting);
+            break;
+          case 'WYSIWYG':
+            initalizeWYSIWYG(blockSetting);
+            break;
+        }
+      }
+    }
+  }
+
 }
 
 // Initialize pell on an HTMLElement

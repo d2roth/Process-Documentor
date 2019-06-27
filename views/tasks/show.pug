@@ -1,0 +1,17 @@
+extends ../layouts/main.pug
+block content
+  .container
+    header
+      h1= task.title
+
+    div
+      - for (b of task.blocks)
+        .card.mb-3
+          - if( b.title != "" )
+            .card-header
+              = `${b.title}`
+          .card-body
+            - if( b.type == 'INPUT' )
+              input.form-control( type="text", name=`${b.title}` )
+            - if( b.type == 'WYSIWYG' )
+              | !{b.value}

@@ -3,19 +3,16 @@ form#procedure-form.card(action= ( procedure ? "/procedures/update" : "/procedur
     input( type="hidden", name="id", value=procedure.id )
 
   .card-header
-    .block-insert-actions.btn-group
-      a#add-input.block-insert-action.btn.btn-secondary.block-add-input-action( title="Add Input" ) Input
-      a#add-wysiwyg.block-insert-action.btn.btn-secondary.block-add-wysiwyg-action( title="Add WYSIWYG Editor" ) WYSIWYG
-
-  .card-body
     .form-group
       label Title
       input.form-control(name="procedure[title]", required, value=(procedure ? procedure.title : null))
+    
 
+  .card-body
     .form-group
-      label Content
-      textarea.form-control(name="procedure[content]")
-        = procedure && procedure.content
+      label Description
+      textarea.form-control(name="procedure[description]")
+        = procedure && procedure.description
 
     .form-group
       label Status
@@ -26,4 +23,4 @@ form#procedure-form.card(action= ( procedure ? "/procedures/update" : "/procedur
     #procedureBody
 
     .form-group
-      button.btn.btn-dark(type="submit") Submit
+      button.btn.btn-dark(type="submit")= procedure && procedure.id ? "Update" : "Create"

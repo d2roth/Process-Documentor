@@ -1,0 +1,19 @@
+form#task-form.card(action= ( task ? "/tasks/update" : "/tasks" ), method="POST")
+  if task
+    input( type="hidden", name="id", value=task.id )
+
+  .card-header
+    .block-insert-actions.btn-group
+      a#add-input.block-insert-action.btn.btn-secondary.block-add-input-action( title="Add Input" ) Input
+      a#add-wysiwyg.block-insert-action.btn.btn-secondary.block-add-wysiwyg-action( title="Add WYSIWYG Editor" ) WYSIWYG
+
+  .card-body
+    .form-group
+      label Title
+      input.form-control(name="task[title]", required, value=(task ? task.title : null))
+    
+    #taskBody
+      = `${JSON.stringify(task.blocks)}`
+
+    .form-group
+      button.btn.btn-dark(type="submit") Submit
