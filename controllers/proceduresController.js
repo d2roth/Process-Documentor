@@ -46,6 +46,7 @@ exports.published = (req, res) => {
 
 exports.show = (req, res) => {
   Procedure.findById(req.params.id)
+  .populate('tasks')
   .then( (procedure) => {
     res.render( 'procedures/show', {
       procedure: procedure,
@@ -96,7 +97,7 @@ exports.create = (req, res) => {
   // This is our form post object. The POST data is an object and has our desired keys.
   Procedure.create( req.body.procedure )
   .then(() => {
-    req.flash('success', `Congrats! ${req.body.title} was created successfully.`);
+    req.flash('success', `Congrats! ${req.body.procedure.title} was created successfully.`);
     res.redirect( `/procedures` );
   })
   .catch(err => {

@@ -1,21 +1,6 @@
 const mongoose = require( 'mongoose' );
 
-const BlockSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
-  value: {
-    type: String,
-    required: false
-  },
-  type: {
-    type: String,
-    enum: ['WYSIWYG', 'INPUT'],
-    required: true
-  }
-});
-
+const BlockSchema = require('./block.js').schema
 // Our Schema
 const TaskSchema = new mongoose.Schema({
   title: {

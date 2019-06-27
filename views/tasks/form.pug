@@ -13,7 +13,7 @@ form#task-form.card(action= ( task ? "/tasks/update" : "/tasks" ), method="POST"
       input.form-control(name="task[title]", required, value=(task ? task.title : null))
     
     #taskBody
-    = `Blocks:${task.block}`
+      = `${JSON.stringify(task.blocks)}`
 
     .form-group
       button.btn.btn-dark(type="submit") Submit

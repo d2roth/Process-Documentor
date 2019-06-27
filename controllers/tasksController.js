@@ -120,14 +120,23 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  console.log( req.body.task );
-  // return;
+  let sentBlocks = req.body.task.blocks;
+  let sortedBlocks = [];
+
+  // Re-order our items based on how they visually were displayed
+  for (order of req.body.block_order){
+    sortedBlocks.push(sentBlocks[order]);
+  }
+
+  req.body.task.blocks = sortedBlocks;
+
   Task.updateOne({
     _id: req.body.id
   }, req.body.task, {
     runValidators: true
   } )
   .then(() => {
+    req.flash('success', 'Task successfully updated!');
     res.redirect( `/tasks/${req.body.id}` );
   })
   .catch(err => {

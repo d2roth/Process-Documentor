@@ -6,7 +6,7 @@ block content
 
     div
       - for (b of task.blocks)
-        .card
+        .card.mb-3
           - if( b.title != "" )
             .card-header
               = `${b.title}`
@@ -14,4 +14,4 @@ block content
             - if( b.type == 'INPUT' )
               input.form-control( type="text", name=`${b.title}` )
             - if( b.type == 'WYSIWYG' )
-              = b.value
+              | !{b.value}

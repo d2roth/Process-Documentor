@@ -7,8 +7,6 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-light.bg-light
     ul.navbar-nav.mr-auto
       li.nav-item
         a.nav-link(href='/') Home
-      li.nav-item
-        a.nav-link(href='/about') About
       li.nav-item.dropdown
         a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') Procedures
         .dropdown-menu
@@ -16,5 +14,10 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-light.bg-light
           a.dropdown-item(href='/procedures/new') New Procedure
           a.dropdown-item(href='/procedures/published') Published
           a.dropdown-item(href='/procedures/drafts') Drafts
+      li.nav-item.dropdown
+        a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') Tasks
+        .dropdown-menu
+          a.dropdown-item(href='/tasks') All Tasks
+          a.dropdown-item(href='/tasks/new') New Task
       li.nav-item
         a.nav-link(href='/contact') Contact

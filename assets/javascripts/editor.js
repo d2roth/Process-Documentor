@@ -118,7 +118,6 @@ if( taskForm ){
     <div class="card-body">
       <input type="hidden" name="block_order[]" value="${index}">
       <input type="hidden" name="task[blocks][${index}][type]" value="${type.toUpperCase()}">
-      <input type="text" class="input-title form-control" name="task[blocks][${index}][title]" placeholder="Enter Title Here...">
       ${content}
     </div>
     </div>`;
@@ -127,31 +126,62 @@ if( taskForm ){
     return block_wrapper;
   }
 
-  let inputBlock = ( ) => {
-    return `<input type="text" class="form-control" disabled placeholder="Value will go here...">`;
+  let inputBlock = ( settings ) => {
+    return `
+      <input type="text" class="input-title form-control" name="task[blocks][${index}][title]" placeholder="Enter Title Here..." value="${settings.title !== undefined ? settings.title : ''}">
+      <input type="text" class="form-control" disabled placeholder="Value will go here...">
+    `;
   }
 
-  let wysiwygBlock = ( editorId ) => {
-    return `<textarea class="wysiwyg-editor-output" id="${editorId}-output" name="task[blocks][${index}][value]"></textarea>
-    <div class="wysiwyg-editor" id="${editorId}"></div>`;
+  let wysiwygBlock = ( editorId, settings ) => {
+    return `
+      <input type="text" class="input-title form-control" name="task[blocks][${index}][title]" placeholder="Enter Title Here..." value="${settings.title !== undefined ? settings.title : ''}">
+      <textarea class="wysiwyg-editor-output" id="${editorId}-output" name="task[blocks][${index}][value]">${settings.value !== undefined ? settings.value : ''}</textarea>
+      <div class="wysiwyg-editor" id="${editorId}"></div>
+    `;
   }
 
+  let initalizeInput = function ( settings ){
+    taskBody.insertAdjacentHTML('beforeend', createBlock(inputBlock(settings), 'input'));
+  }
+  let initalizeWYSIWYG = function( settings ){
+    let id = editorId++;
+    taskBody.insertAdjacentHTML('beforeend', createBlock(wysiwygBlock(`editor-${id}`, settings), 'wysiwyg' ) );
+
+    let editor = document.querySelector(`#editor-${id}`);
+    initalizeEditor(editor);
+
+    // Fix so tab index doesn't loop through buttons. Source: https://github.com/jaredreich/pell/issues/168
+    editor.querySelectorAll('.pell-button').forEach(button => button.setAttribute('tabIndex', "-1"))
+    // Set the default content
+    editor.content.innerHTML = document.querySelector(`#editor-${id}-output`).value;
+  }
 
   taskForm.querySelector( '#add-input' ).addEventListener( 'click', (e) => {
-    taskBody.insertAdjacentHTML('beforeend', createBlock(inputBlock(), 'input'));
+    initalizeInput({});
   }, false);
 
   let editorId = 0;
   taskForm.querySelector( '#add-wysiwyg' ).addEventListener( 'click', (e) => {
-    let id = editorId++;
-    taskBody.insertAdjacentHTML('beforeend', createBlock(wysiwygBlock(`editor-${id}`), 'wysiwyg' ) );
-
-    const editor = document.querySelector(`#editor-${id}`);
-    editor.dataset.editor = initalizeEditor(editor);
-
-    // Fix so tab index doesn't loop through buttons. Source: https://github.com/jaredreich/pell/issues/168
-    editor.querySelectorAll('.pell-button').forEach(button => button.setAttribute('tabIndex', "-1"))
+    initalizeWYSIWYG(editorId, {})
   }, false);
+
+  if( taskBody.innerHTML != "" ){
+    if( blockSettings = JSON.parse( taskBody.innerHTML ) ){
+      taskBody.innerHTML = "";
+      for(blockSetting of blockSettings){
+        switch( blockSetting.type ){
+          case 'INPUT':
+            initalizeInput(blockSetting);
+            break;
+          case 'WYSIWYG':
+            initalizeWYSIWYG(blockSetting);
+            break;
+        }
+      }
+    }
+  }
+
 }
 
 // Initialize pell on an HTMLElement

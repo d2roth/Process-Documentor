@@ -14,6 +14,11 @@ const ProcedureSchema = new mongoose.Schema({
     type: String,
     enum: ['DRAFT', 'PUBLISHED'],
     default: 'DRAFT'
+  },
+  tasks: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task',
+    required: false
   }
 },
 {
