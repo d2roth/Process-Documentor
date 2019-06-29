@@ -1,5 +1,5 @@
-form#task-form.card(action= ( task ? "/tasks/update" : "/tasks" ), method="POST")
-  if task
+form#task-form.card(action= ( task && task.id ? "/tasks/update" : "/tasks" ), method="POST")
+  if task && task.id
     input( type="hidden", name="id", value=task.id )
 
   .card-header
@@ -13,7 +13,8 @@ form#task-form.card(action= ( task ? "/tasks/update" : "/tasks" ), method="POST"
       input.form-control(name="task[title]", required, value=(task ? task.title : null))
     
     #taskBody
-      = `${JSON.stringify(task.blocks)}`
+      if( task && task.blocks )
+        = `${JSON.stringify(task.blocks)}`
 
     .form-group
       button.btn.btn-dark(type="submit") Submit

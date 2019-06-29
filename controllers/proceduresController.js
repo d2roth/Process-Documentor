@@ -1,6 +1,7 @@
 const Procedure = require( '../models/procedure' );
 
 exports.index = (req, res) => {
+  req.isAuthenticated();
   Procedure.find()
     .then( procedures => {
       res.render('procedures/index', {
@@ -15,6 +16,7 @@ exports.index = (req, res) => {
 };
 
 exports.drafts = (req, res) => {
+  req.isAuthenticated();
   Procedure.find().drafts()
   .populate('tasks')
     .then( procedures => {
@@ -30,6 +32,7 @@ exports.drafts = (req, res) => {
 };
 
 exports.published = (req, res) => {
+  req.isAuthenticated();
   Procedure.find().published()
   .populate('tasks')
     .then( procedures => {
@@ -45,6 +48,7 @@ exports.published = (req, res) => {
 };
 
 exports.show = (req, res) => {
+  req.isAuthenticated();
   Procedure.findById(req.params.id)
   .populate('tasks')
   .then( (procedure) => {
@@ -61,6 +65,7 @@ exports.show = (req, res) => {
 };
 
 exports.new = (req, res) => {
+  req.isAuthenticated();
   let procedure = req.session.procedure ? req.session.procedure : null;
   req.session.procedure = null;
   
@@ -71,6 +76,7 @@ exports.new = (req, res) => {
 };
 
 exports.edit = (req, res) => {
+  req.isAuthenticated();
   if( process.env.SKIP_DATABASE ){
     res.locals.flash.error.push('This view is not connected to the database! Remove or turn off SKIP_DATABASE in your environment variables.');
     res.render( 'procedures/edit', {
@@ -94,6 +100,7 @@ exports.edit = (req, res) => {
 };
 
 exports.create = (req, res) => {
+  req.isAuthenticated();
   // This is our form post object. The POST data is an object and has our desired keys.
   Procedure.create( req.body.procedure )
   .then(() => {
@@ -109,6 +116,7 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
+  req.isAuthenticated();
   Procedure.updateOne({
     _id: req.body.id
   }, req.body.procedure, {
@@ -125,6 +133,7 @@ exports.update = (req, res) => {
 };
 
 exports.destroy = (req, res) => {
+  req.isAuthenticated();
   Procedure.deleteOne({
     _id: req.body.id
   })

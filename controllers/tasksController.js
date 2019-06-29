@@ -1,6 +1,7 @@
 const Task = require( '../models/task' );
 
 exports.index = (req, res) => {
+  req.isAuthenticated();
   Task.find()
     .then( tasks => {
       res.render('tasks/index', {
@@ -15,6 +16,7 @@ exports.index = (req, res) => {
 };
 
 exports.drafts = (req, res) => {
+  req.isAuthenticated();
   Task.find().drafts()
   .populate('tasks')
     .then( tasks => {
@@ -30,6 +32,7 @@ exports.drafts = (req, res) => {
 };
 
 exports.published = (req, res) => {
+  req.isAuthenticated();
   Task.find().published()
   .populate('tasks')
     .then( tasks => {
@@ -45,6 +48,7 @@ exports.published = (req, res) => {
 };
 
 exports.show = (req, res) => {
+  req.isAuthenticated();
   Task.findById(req.params.id)
   .then( (task) => {
     res.render( 'tasks/show', {
@@ -60,6 +64,7 @@ exports.show = (req, res) => {
 };
 
 exports.new = (req, res) => {
+  req.isAuthenticated();
   let task = req.session.task ? req.session.task : null;
   req.session.task = null;
   
@@ -70,6 +75,10 @@ exports.new = (req, res) => {
 };
 
 exports.edit = (req, res) => {
+  req.isAuthenticated();
+  let edited_task = req.session.task ? req.session.task : null;
+  req.session.task = null;
+
   if( process.env.SKIP_DATABASE && process.env.SKIP_DATABASE == true ){
     res.locals.flash.error.push('This view is not connected to the database! Remove or turn off SKIP_DATABASE in your environment variables.');
     res.render( 'tasks/edit', {
@@ -82,19 +91,20 @@ exports.edit = (req, res) => {
     Task.findById(req.params.id)
       .then( (task) => {
         res.render( 'tasks/edit', {
-          task: task,
+          task: edited_task || task,
           title: task.title
         })
       })
       .catch(err => {
         console.error( `Error: ${err}` );
         req.flash('error', `ERROR: ${err}`);
-        res.redirect( '/' );
+        res.redirect( '/tasks' );
       });
   }
 };
 
 exports.create = (req, res) => {
+  req.isAuthenticated();
   let sentBlocks = req.body.task.blocks;
   let sortedBlocks = [];
 
@@ -120,6 +130,7 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
+  req.isAuthenticated();
   let sentBlocks = req.body.task.blocks;
   let sortedBlocks = [];
 
@@ -140,13 +151,14 @@ exports.update = (req, res) => {
     res.redirect( `/tasks/${req.body.id}` );
   })
   .catch(err => {
-    console.error( `Error: ${err}` );
+    req.session.task = req.body.task;
     req.flash('error', `ERROR: ${err}`);
     res.redirect( `/tasks/${req.body.id}/edit` );
   });
 };
 
 exports.destroy = (req, res) => {
+  req.isAuthenticated();
   Task.deleteOne({
     _id: req.body.id
   })

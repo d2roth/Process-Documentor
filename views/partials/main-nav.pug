@@ -3,21 +3,31 @@ nav.navbar.fixed-top.navbar-expand-lg.navbar-light.bg-light
   button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
     span.navbar-toggler-icon
 
-  #navbarSupportedContent.collapse.navbar-collapse
-    ul.navbar-nav.mr-auto
+  #navbarSupportedContent.collapse.navbar-collapse.justify-content-end
+    ul.navbar-nav
       li.nav-item
         a.nav-link(href='/') Home
-      li.nav-item.dropdown
-        a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') Procedures
-        .dropdown-menu
-          a.dropdown-item(href='/procedures') All Procedures
-          a.dropdown-item(href='/procedures/new') New Procedure
-          a.dropdown-item(href='/procedures/published') Published
-          a.dropdown-item(href='/procedures/drafts') Drafts
-      li.nav-item.dropdown
-        a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') Tasks
-        .dropdown-menu
-          a.dropdown-item(href='/tasks') All Tasks
-          a.dropdown-item(href='/tasks/new') New Task
+      if( isAuthenticated )
+        li.nav-item.dropdown
+          a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') Procedures
+          .dropdown-menu
+            a.dropdown-item(href='/procedures') All Procedures
+            a.dropdown-item(href='/procedures/new') New Procedure
+            a.dropdown-item(href='/procedures/published') Published
+            a.dropdown-item(href='/procedures/drafts') Drafts
+        li.nav-item.dropdown
+          a.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false') Tasks
+          .dropdown-menu
+            a.dropdown-item(href='/tasks') All Tasks
+            a.dropdown-item(href='/tasks/new') New Task
       li.nav-item
         a.nav-link(href='/contact') Contact
+      if( isAuthenticated )
+        li.nav-item
+          form.nav-destroy(action='/logout', method="POST")
+            input.destroy.btn.btn-info(type="submit", value="Logout")
+      else
+        li.nav-item
+          .btn-group
+            a.nav-link.btn.btn-outline-primary( href="/users/new" ) Register
+            a.nav-link.btn.btn-primary( href="/login" ) Login
