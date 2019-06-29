@@ -1,5 +1,5 @@
-form#procedure-form.card(action= ( procedure ? "/procedures/update" : "/procedures" ), method="POST")
-  if procedure
+form#procedure-form.card(action= ( procedure && procedure.id ? "/procedures/update" : "/procedures" ), method="POST")
+  if procedure && procedure.id
     input( type="hidden", name="id", value=procedure.id )
 
   .card-header

@@ -1,17 +1,24 @@
 extends ../layouts/main.pug
 block content
   .container
-    header
-      h1= task.title
-
-    div
-      - for (b of task.blocks)
-        .card.mb-3
-          - if( b.title != "" )
-            .card-header
-              = `${b.title}`
+    .row
+      .col-12
+        form.card(action="/response/new")
+          header.card-header
+            h1= task.title
           .card-body
-            - if( b.type == 'INPUT' )
-              input.form-control( type="text", name=`${b.title}` )
-            - if( b.type == 'WYSIWYG' )
-              | !{b.value}
+            if task && task.id
+              input( type="hidden", name="response[task_id]", value=task.id )
+
+            - for (b of task.blocks)
+              .card.mb-3
+                - if( b.title != "" )
+                  .card-header
+                    = `${b.title}`
+                .card-body
+                  - if( b.type == 'INPUT' )
+                    input.form-control( type="text", name=`response[${b.slug}]` )
+                  - if( b.type == 'WYSIWYG' )
+                    | !{b.value}
+          .card-footer.text-right
+            input.btn.btn-primary( type="submit" disabled value="Save")

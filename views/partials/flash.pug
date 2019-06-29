@@ -1,6 +1,12 @@
 if flash
   .flash
     if flash.success.length
-      .alert.alert-success= flash.success.join("\n")
+      .alert.alert-success
+        each success in flash.success
+          = success
+          br
     if flash.error.length
-      .alert.alert-danger= flash.error.join("\n")
+      .alert.alert-danger
+        each error in flash.error
+          = error
+          br

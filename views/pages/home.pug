@@ -10,4 +10,9 @@ block content
       h1
         = title
         br
-    p Write out a process in a document allowing users to fill in details as nessesary for use later in the process or just to save them with the process.
+    p Write out a process, we call them procedures, in a document allowing users to fill in details as nessesary so the when a user is finished you know the procedure is done right, this time and every time.
+
+    if( !isAuthenticated )
+      p #[a(href="/register") Register Now] to get started.
+    else
+      p Check out the #[a(href="/tasks") tasks] for a look at what can be created.
